@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Resume/CV</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to bottom right, #4facfe, #00f2fe);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            max-width: 500px;
+            background-color: #fff;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            position: relative; /* Added position relative */
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+        }
+
+        .upload-btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            font-size: 16px;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            z-index: 1;
+        }
+
+        .upload-btn:hover {
+            background-color: #0056b3;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .file-input-label {
+            display: inline-block;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 0;
+        }
+
+        .file-name {
+            text-align: center;
+            font-size: 14px;
+            color: #555;
+            margin-top: 10px; /* Adjusted margin */
+        }
+
+        .upload-message {
+            text-align: center;
+            font-size: 14px;
+            color: #555;
+        }
+
+        /* Added drag and drop styles */
+        .drag-drop-container {
+            border: 2px dashed #007bff;
+            border-radius: 5px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            margin-bottom: 20px; /* Adjusted margin */
+        }
+
+        .drag-drop-container:hover {
+            background-color: #f0f0f0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h2>Upload File</h2>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <!-- Added drag and drop container -->
+            <div class="drag-drop-container" id="drag-drop-container">
+                <span>Drag & Drop file here or</span><br>
+                <label for="resume" class="file-input-label">
+                    <span class="upload-btn">Choose File</span>
+                    <input type="file" name="resume" id="resume" accept=".pdf,.doc,.docx,.jpg">
+                </label>
+            </div>
+            <div class="file-name" id="file-name">No file chosen</div>
+            <button type="submit" class="upload-btn">Upload</button>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById("resume").addEventListener("change", function () {
+            var fileName = this.files[0].name;
+            document.getElementById("file-name").textContent = fileName;
+        });
+
+        // Drag and Drop functionality
+        var dragDropContainer = document.getElementById('drag-drop-container');
+
+        dragDropContainer.addEventListener('dragover', function (e) {
+            e.preventDefault();
+            this.classList.add('drag-over');
+        });
+
+        dragDropContainer.addEventListener('dragleave', function () {
+            this.classList.remove('drag-over');
+        });
+
+        dragDropContainer.addEventListener('drop', function (e) {
+            e.preventDefault();
+            this.classList.remove('drag-over');
+
+            var file = e.dataTransfer.files[0];
+            document.getElementById('file-name').textContent = file.name;
+            document.getElementById('resume').files = e.dataTransfer.files;
+        });
+    </script>
+</body>
+
+</html>
